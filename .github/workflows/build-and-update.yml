@@ -91,7 +91,7 @@ jobs:
 
       - name: Push OTA update
         run: |
-          pnpm dlx eas update \
+          pnpm dlx eas-cli update \
             --branch production \
             --message "${{ steps.ota_msg.outputs.msg }}"
         env:
@@ -168,7 +168,7 @@ jobs:
         if: steps.decide.outputs.skip != 'true'
         run: |
           set -euo pipefail
-          pnpm dlx eas build -p android \
+          pnpm dlx eas-cli build -p android \
             --profile production-apk \
             --non-interactive \
             --json > eas-build.json
