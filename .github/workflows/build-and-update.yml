@@ -1,0 +1,224 @@
+name: Build & Publish
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_msg: ${{ steps.get_msg.outputs.msg }}
+      should_ota: ${{ steps.check.outputs.ota }}
+      should_build: ${{ steps.check.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get full commit message
+        id: get_msg
+        run: |
+          set -euo pipefail
+          MSG=$(git log -1 --pretty=%B)
+          echo "msg<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$MSG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Detect triggers from full message
+        id: check
+        run: |
+          set -euo pipefail
+          MSG='${{ steps.get_msg.outputs.msg }}'
+
+          if echo "$MSG" | grep -q '\[OTAupdate\]'; then
+            echo "ota=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ota=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if echo "$MSG" | grep -q '\[apkBuild\]'; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  ota:
+    needs: setup
+    if: needs.setup.outputs.should_ota == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        run: npm i -g pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate OTA message
+        id: ota_msg
+        run: |
+          set -euo pipefail
+          MSG='${{ needs.setup.outputs.commit_msg }}'
+          COMMIT_SHA="${GITHUB_SHA}"
+          COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${COMMIT_SHA}"
+
+          if echo "$MSG" | grep -q '\[OTAupdate\]=\['; then
+            OTA_TEXT=$(printf '%s' "$MSG" | perl -0777 -ne 'if (/\[OTAupdate\]=\[(.*?)\]/s) { print $1 }')
+            if [ -n "$OTA_TEXT" ]; then
+              OTA_MSG="auto update: $OTA_TEXT"
+            else
+              OTA_MSG="auto update: $COMMIT_URL"
+            fi
+          else
+            OTA_MSG="auto update: $COMMIT_URL"
+          fi
+
+          echo "msg<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$OTA_MSG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Push OTA update
+        run: |
+          pnpm dlx eas update \
+            --branch production \
+            --message "${{ steps.ota_msg.outputs.msg }}"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+  build-apk:
+    needs: setup
+    if: needs.setup.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        run: npm i -g pnpm@latest
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Read current app version
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./app.json').expo.version")
+          CURRENT_TAG="v${VERSION#v}"
+
+          echo "version<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$VERSION" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          echo "current_tag<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$CURRENT_TAG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Get last GitHub release tag
+        id: last_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          LAST_TAG=$(gh release list --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null || true)
+
+          echo "last_tag<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$LAST_TAG" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Decide whether to skip build
+        id: decide
+        run: |
+          set -euo pipefail
+          CURRENT_TAG='${{ steps.version.outputs.current_tag }}'
+          LAST_TAG='${{ steps.last_release.outputs.last_tag }}'
+
+          CURRENT_VERSION="${CURRENT_TAG#v}"
+          LAST_VERSION="${LAST_TAG#v}"
+
+          if [ -n "$LAST_TAG" ] && [ "$CURRENT_VERSION" = "$LAST_VERSION" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop if version already released
+        if: steps.decide.outputs.skip == 'true'
+        run: |
+          echo "Same version already released. Skipping APK build."
+
+      - name: Build APK on EAS
+        if: steps.decide.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          pnpm dlx eas build -p android \
+            --profile production-apk \
+            --non-interactive \
+            --json > eas-build.json
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Extract APK URL
+        if: steps.decide.outputs.skip != 'true'
+        id: apk
+        run: |
+          set -euo pipefail
+
+          APK_URL=$(jq -r '
+            if type == "array" then
+              .[0].artifacts.buildUrl
+              // .[0].artifacts.applicationArchiveUrl
+              // .[0].artifacts.apkUrl
+              // empty
+            else
+              .artifacts.buildUrl
+              // .artifacts.applicationArchiveUrl
+              // .artifacts.apkUrl
+              // empty
+            end
+          ' eas-build.json)
+
+          if [ -z "$APK_URL" ] || [ "$APK_URL" = "null" ]; then
+            echo "APK URL not found in eas-build.json"
+            cat eas-build.json
+            exit 1
+          fi
+
+          echo "apk_url<<EOF" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$APK_URL" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Download APK
+        if: steps.decide.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          curl -L "${{ steps.apk.outputs.apk_url }}" -o app.apk
+
+      - name: Create GitHub Release with APK
+        if: steps.decide.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG='${{ steps.version.outputs.current_tag }}'
+          gh release create "$TAG" app.apk \
+            --title "$TAG" \
+            --notes "Auto release from GitHub Actions"
+          
