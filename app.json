@@ -5,7 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": ["useless", "Shoutorsuffer"],
+    "scheme": [
+      "useless",
+      "Shoutorsuffer"
+    ],
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -43,6 +46,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f46d1f74-a128-4b1a-b8bd-000a9c8faedb"
+      }
+    },
+    "owner": "rajnishkmehta"
   }
 }
