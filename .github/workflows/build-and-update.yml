@@ -53,8 +53,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -103,8 +101,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -211,14 +207,31 @@ jobs:
           set -euo pipefail
           curl -L "${{ steps.apk.outputs.apk_url }}" -o app.apk
 
-      - name: Create GitHub Release with APK
+      - name: Create GitHub Release
         if: steps.decide.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+
           TAG='${{ steps.version.outputs.current_tag }}'
-          gh release create "$TAG" app.apk \
-            --title "$TAG" \
-            --notes "Auto release from GitHub Actions"
-          
+          VERSION='${{ steps.version.outputs.version }}'
+
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+
+          echo "Version: $VERSION (major=$MAJOR)"
+
+          if [ "$MAJOR" -lt 1 ]; then
+            echo "Creating PRE-RELEASE..."
+
+            gh release create "$TAG" app.apk \
+              --title "$TAG" \
+              --notes "🚧 Pre-release (development version)" \
+              --prerelease
+          else
+            echo "Creating STABLE RELEASE..."
+
+            gh release create "$TAG" app.apk \
+              --title "$TAG" \
+              --notes "Stable release"
+          fi
