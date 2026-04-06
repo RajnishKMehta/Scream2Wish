@@ -14,6 +14,7 @@ import {
 } from '@lib/permissionManager';
 import { Storage } from '@lib/storage';
 import { Colors, Layout, Components, Typography } from '@stylez';
+import { setupAudioConfig } from '@lib/audioManager';
 
 type Phase = 'requesting' | 'checking' | 'done';
 
@@ -49,10 +50,15 @@ export default function PermissionGate() {
         }),
       ]),
     ).start();
-
-    runPermissionFlow();
+    initApp()
   }, []);
 
+  async function initApp() {
+    try {
+      await setupAudioConfig();
+    } catch {}
+  await runPermissionFlow();
+  }
   async function runPermissionFlow() {
     setPhase('requesting');
     const requiredStatuses: PermissionStatuses = await requestRequiredPermissions();

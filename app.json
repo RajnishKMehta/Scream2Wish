@@ -2,34 +2,26 @@
   "expo": {
     "name": "Shout or Sufferrr",
     "slug": "shout-or-suffer",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "orientation": "portrait",
-
     "icon": "./assets/images/icon.png",
-
     "scheme": [
       "useless",
       "shoutorsuffer"
     ],
-
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-
     "updates": {
       "url": "https://u.expo.dev/f46d1f74-a128-4b1a-b8bd-000a9c8faedb",
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0
     },
-
     "runtimeVersion": {
       "policy": "appVersion"
     },
-
     "ios": {
       "supportsTablet": true
     },
-
     "android": {
       "package": "com.rajnishkmehta.shoutorsuffer",
       "adaptiveIcon": {
@@ -37,15 +29,12 @@
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
-
     "web": {
       "output": "static",
       "favicon": "./assets/images/icon.png"
     },
-
     "plugins": [
       "expo-router",
       [
@@ -59,21 +48,19 @@
             "backgroundColor": "#1f1f1f"
           }
         }
-      ]
+      ],
+      "expo-asset"
     ],
-
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
-
     "extra": {
       "router": {},
       "eas": {
         "projectId": "f46d1f74-a128-4b1a-b8bd-000a9c8faedb"
       }
     },
-
     "owner": "rajnishkmehta"
   }
 }

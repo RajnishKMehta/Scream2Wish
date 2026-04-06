@@ -1,54 +1,52 @@
-import { Audio } from 'expo-av';
+import { createAudioPlayer, setAudioModeAsync } from 'expo-audio';
+import type { AudioPlayer } from 'expo-audio';
 
-let currentSound: Audio.Sound | null = null;
+let currentPlayer: AudioPlayer | null = null;
 
-async function setAudioMode() {
-  await Audio.setAudioModeAsync({
-    allowsRecordingIOS: false,
-    playsInSilentModeIOS: true,
-    shouldDuckAndroid: false,
-    staysActiveInBackground: false,
+export async function setupAudioConfig() {
+  await setAudioModeAsync({
+    playsInSilentMode: true,
+    interruptionMode: 'duckOthers',
+    shouldPlayInBackground: false,
   });
 }
 
-async function playAudio(
-  source: Parameters<typeof Audio.Sound.createAsync>[0],
-  loop = false,
-): Promise<void> {
+async function playAudio(source: any, loop = false): Promise<void> {
   try {
-    await stopPlaying();
-    await setAudioMode();
+    if (currentPlayer) {
+      currentPlayer.remove();
+      currentPlayer = null;
+    }
 
-    const { sound } = await Audio.Sound.createAsync(source, {
-      shouldPlay: true,
-      isLooping: loop,
-      volume: 1.0,
-    });
+    const player = createAudioPlayer(source);
 
-    currentSound = sound;
+    player.loop = loop;
+    player.volume = 1;
 
-    sound.setOnPlaybackStatusUpdate((status) => {
-      if (status.isLoaded && status.didJustFinish && !loop) {
-        currentSound = null;
+    const sub = player.addListener('playbackStatusUpdate', (status) => {
+      if (!status?.isPlaying && !loop) {
+        currentPlayer = null;
+        sub.remove();
       }
     });
+
+    player.play();
+    currentPlayer = player;
+
   } catch {
-    currentSound = null;
+    currentPlayer = null;
   }
 }
 
 export async function stopPlaying(): Promise<void> {
-  if (currentSound) {
-    try {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
-    } catch {}
-    currentSound = null;
+  if (currentPlayer) {
+    currentPlayer.remove();
+    currentPlayer = null;
   }
 }
 
 export function isSoundPlaying(): boolean {
-  return currentSound !== null;
+  return currentPlayer?.playing ?? false;
 }
 
 export async function playChiSasur(loop = false): Promise<void> {
