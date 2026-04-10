@@ -1,5 +1,5 @@
 {
-  "name": "shout-or-suffer",
+  "name": "scream2wish",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "description": "A chaotic React Native app where the only way to stop the madness is to scream.",
@@ -9,17 +9,17 @@
     "url": "https://github.com/RajnishKMehta"
   },
   "license": "MIT",
-  "homepage": "https://github.com/RajnishKMehta/Shout-or-Suffer#readme",
+  "homepage": "https://github.com/RajnishKMehta/scream2wish#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RajnishKMehta/Shout-or-Suffer.git"
+    "url": "git+https://github.com/RajnishKMehta/scream2wish.git"
   },
   "bugs": {
-    "url": "https://github.com/RajnishKMehta/Shout-or-Suffer/issues"
+    "url": "https://github.com/RajnishKMehta/scream2wish/issues"
   },
   "keywords": [
-    "shout or suffer",
-    "shout-or-suffer",
+    "scream to wish",
+    "scream2wish",
     "prank app",
     "fun"
   ],
@@ -29,12 +29,13 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@expo/metro-runtime": "~55.0.9",
     "expo": "^55.0.11",
-    "expo-asset": "~55.0.12",
+    "expo-asset": "~55.0.13",
     "expo-audio": "~55.0.11",
     "expo-constants": "~55.0.11",
     "expo-linking": "~55.0.11",
@@ -63,6 +64,5 @@
     "eslint-config-expo": "~55.0.0",
     "knip": "^6.3.0",
     "typescript": "~5.9.2"
-  },
-  "private": true
+  }
 }

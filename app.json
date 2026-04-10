@@ -1,17 +1,16 @@
 {
   "expo": {
-    "name": "Shout or Sufferrr",
-    "slug": "shout-or-suffer",
-    "version": "0.3.0",
+    "name": "Scream2Wish",
+    "slug": "scream2wish",
+    "version": "0.4.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": [
-      "useless",
-      "shoutorsuffer"
+      "scream2wish"
     ],
     "userInterfaceStyle": "automatic",
     "updates": {
-      "url": "https://u.expo.dev/f46d1f74-a128-4b1a-b8bd-000a9c8faedb",
+      "url": "https://u.expo.dev/11d3fd05-ca9b-4d2f-9eba-ab5dbda49391",
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0
@@ -23,7 +22,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.rajnishkmehta.shoutorsuffer",
+      "package": "com.rajnishkmehta.scream2wish",
       "adaptiveIcon": {
         "backgroundColor": "#242729",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -58,7 +57,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f46d1f74-a128-4b1a-b8bd-000a9c8faedb"
+        "projectId": "11d3fd05-ca9b-4d2f-9eba-ab5dbda49391"
       }
     },
     "owner": "rajnishkmehta"
