@@ -13,12 +13,10 @@ const MEME_MESSAGES = [
   '💀 Hacking your device...',
   '🌑 Connecting to Dark Web...',
   '📁 Leaking your private information on Dark Web...',
-  ' Uploading your photos to unknown server...',
   '🌚 Reading your browser history...',
   '💳 Searching for bank details...',
   '📍 Tracking your live location...',
   '🎤 Activating microphone secretly...',
-  '👁️ Camera access granted... watching you...',
   '🔐 Bypassing security systems...',
   '📡 Sending data to unknown IP: 69.42.0.0...',
   '🕵️ Agent deployed successfully...',
@@ -27,7 +25,7 @@ const MEME_MESSAGES = [
 ];
 
 const MESSAGE_INTERVAL_MS = 1950;
-const LAST_MESSAGE_HOLD_MS = 2500;
+const LAST_MESSAGE_HOLD_MS = 2050;
 const TOTAL_DURATION_MS = (MEME_MESSAGES.length - 1) * MESSAGE_INTERVAL_MS + LAST_MESSAGE_HOLD_MS;
 
 type Props = {
