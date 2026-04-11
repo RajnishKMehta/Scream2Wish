@@ -26,7 +26,7 @@ const MEME_MESSAGES = [
   '✅ Upload complete. You are now owned.',
 ];
 
-const MESSAGE_INTERVAL_MS = 1800;
+const MESSAGE_INTERVAL_MS = 1950;
 const LAST_MESSAGE_HOLD_MS = 2500;
 const TOTAL_DURATION_MS = (MEME_MESSAGES.length - 1) * MESSAGE_INTERVAL_MS + LAST_MESSAGE_HOLD_MS;
 
