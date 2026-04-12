@@ -1,7 +1,0 @@
-packages:
-  - "."
-  - "action-trigger-worker"
-
-allowBuilds:
-  '0': unrs-resolver
-  unrs-resolver: true
