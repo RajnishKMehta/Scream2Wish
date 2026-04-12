@@ -30,16 +30,18 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "typecheck": "tsc --noEmit"
+    "tscheck": "tsc --noEmit"
   },
   "dependencies": {
     "@expo/metro-runtime": "~55.0.9",
     "expo": "^55.0.14",
     "expo-asset": "~55.0.13",
     "expo-audio": "~55.0.11",
+    "expo-build-properties": "~55.0.13",
     "expo-constants": "~55.0.11",
     "expo-linking": "~55.0.11",
     "expo-router": "~55.0.10",
+    "expo-speech": "~55.0.13",
     "expo-splash-screen": "~55.0.15",
     "expo-status-bar": "~55.0.5",
     "expo-system-ui": "~55.0.13",

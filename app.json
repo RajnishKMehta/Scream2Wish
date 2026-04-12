@@ -2,7 +2,7 @@
   "expo": {
     "name": "Scream2Wish",
     "slug": "scream2wish",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": [
@@ -23,7 +23,6 @@
     },
     "android": {
       "package": "com.rajnishkmehta.scream2wish",
-      "minSdkVersion": 29,
       "adaptiveIcon": {
         "backgroundColor": "#242729",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -49,7 +48,15 @@
           }
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 29
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
