@@ -1,17 +1,8 @@
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
 		if (request.method !== 'POST') {
-			return new Response(JSON.stringify({ error: 'Method not allowed. Use POST.' }), {
+			return new Response(null, {
 				status: 405,
-				headers: { 'Content-Type': 'application/json' },
-			});
-		}
-
-		const apiKey = request.headers.get('x-api-key');
-		if (!apiKey || apiKey !== env.API_KEY) {
-			return new Response(JSON.stringify({ error: 'Unauthorized. Invalid or missing x-api-key.' }), {
-				status: 401,
-				headers: { 'Content-Type': 'application/json' },
 			});
 		}
 
@@ -24,7 +15,7 @@ export default {
 				headers: { 'Content-Type': 'application/json' },
 			});
 		}
-
+		
 		const githubResponse = await fetch('https://api.github.com/repos/RajnishKMehta/Scream2Wish-wishes/dispatches', {
 			method: 'POST',
 			headers: {
