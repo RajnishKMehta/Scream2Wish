@@ -1,3 +1,6 @@
+packages:
+  - "."
+
 allowBuilds:
+  '0': unrs-resolver
   unrs-resolver: true
-nodeLinker: hoisted

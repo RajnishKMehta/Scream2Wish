@@ -53,7 +53,7 @@ LICENSE
 /docs
 /coverage
 /scripts
-
+action-trigger-worker/
 
 # Editor & IDE config
 .vscode/
