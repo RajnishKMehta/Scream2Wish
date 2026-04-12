@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "action-trigger-worker",
+	"name": "scream2wish",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-04-12",
 	"observability": {
