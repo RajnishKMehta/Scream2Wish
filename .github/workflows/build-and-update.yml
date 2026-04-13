@@ -111,8 +111,7 @@ jobs:
           else
             RELEASE_BODY=$(gh release view "$LATEST_TAG" --json body -q '.body' 2>/dev/null || echo "")
 
-            CURRENT_NUM=$(printf '%s' "$RELEASE_BODY" | perl -ne 'if (/update: \*\*#(\d+)\*\*/) { print $1; last }')
-
+            CURRENT_NUM=$(printf '%s' "$RELEASE_BODY" | perl -ne 'if (/update:\s*`#(\d+)`/) { print $1; last; }')
             if [ -n "$CURRENT_NUM" ]; then
               NEXT_NUM=$((CURRENT_NUM + 1))
             else
@@ -137,8 +136,8 @@ jobs:
           OTA_MSG='${{ steps.ota_msg.outputs.msg }}'
           TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
 
-          NEW_BODY=$(printf 'Latest Update\n\n%s\n\nreleasedAt: %s\n\nupdate: **#%s**' "$OTA_MSG" "$TIMESTAMP" "$UPDATE_NUM")
-
+          NEW_BODY=$(printf 'Latest Update\n\n%s\n\nreleasedAt: %s\n\nupdate: **`#%s`**' "$OTA_MSG" "$TIMESTAMP" "$UPDATE_NUM")
+          
           gh release edit "$TAG" --notes "$NEW_BODY"
 
   build-apk:
