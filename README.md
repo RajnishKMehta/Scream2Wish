@@ -6,11 +6,12 @@
 
 *A submission for the [DEV April Fools Challenge 2026](https://dev.to/challenges/aprilfools-2026)*
 
-[![Platform: Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest)
-[![Built with Expo](https://img.shields.io/badge/Built%20with-Expo-000020?logo=expo)](https://expo.dev)
-[![Download APK](https://img.shields.io/badge/Download-APK-ef4444?logo=android)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest)
+[![Platform: Android 10+](https://img.shields.io/badge/Platform-Android_10+-green.svg?style=plastic)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest)
+[![release version](https://img.shields.io/github/v/release/RajnishKMehta/Scream2Wish?include_prereleases&style=plastic&logo=android&color=ef4444&cacheSeconds=300
+)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest)
+[![Built with Expo](https://img.shields.io/badge/Built%20with-Expo-000020?logo=expo&style=plastic)](https://expo.dev)
 
-[**📱 Download APK**](https://github.com/RajnishKMehta/Scream2Wish/releases/latest) · [**🌐 Wishes Board**](https://rajnishkmehta.github.io/Scream2Wish) · [**📦 Wishes Repo**](https://github.com/RajnishKMehta/Scream2Wish-wishes)
+[**📱 Download APK**](https://github.com/RajnishKMehta/Scream2Wish/releases/latest/download/app.apk) · [**🌐 Wishes Board**](https://rajnishkmehta.github.io/Scream2Wish) · [**📦 Wishes Repo**](https://github.com/RajnishKMehta/Scream2Wish-wishes)
 
 </div>
 
@@ -18,7 +19,7 @@
 
 ## What Is This?
 
-Scream2Wish is a completely useless, mildly chaotic Android app that forces you to **scream as loud as you can** to break a genie's lamp and only then lets you make a wish.
+Scream2Wish is a completely 100% useful👀, mildly chaotic Android app that forces you to **scream as loud as you can** to break a genie's lamp and only then lets you make a wish.
 
 Your wish gets sent to the internet via a Cloudflare Worker → GitHub Actions pipeline and lives forever in a public repo. In return, you get to read a random stranger's note. Whether that's comforting or unsettling is entirely up to you.
 
@@ -28,9 +29,9 @@ Your wish gets sent to the internet via a Cloudflare Worker → GitHub Actions p
 
 ## Download
 
-[![Download APK](https://img.shields.io/badge/Download%20APK-Latest%20Release-ef4444?style=for-the-badge&logo=android)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest)
+[![Download APK](https://img.shields.io/badge/Download%20APK-Latest%20Release-ef4444?style=for-the-badge&logo=android)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest/download/app.apk)
 
-Install on any Android device (sideloading required enable "Install from unknown sources" in settings).
+Install on Android 10+ devices (sideloading required enable "Install from unknown sources" in settings).
 
 ---
 
@@ -39,7 +40,7 @@ Install on any Android device (sideloading required enable "Install from unknown
 ### Step 1 — Permissions Gate
 The app opens with an animated permission screen asking for microphone access (to detect your screams) and vibration (to annoy you while you're idle). You cannot proceed without granting both. The back button is "defective."
 
-### Step 2 — Fake Login
+### Step 2 — joke Login
 A suspiciously serious login screen asks for your **real name** and a **password**. The name is used throughout the experience. The password has a specific validation rule figure it out yourself. Enter it wrong enough times and a video overlay starts playing in the background to make you regret your life choices. A sound effect also plays. You have been warned.
 
 ### Step 3 — The Lamp
@@ -53,9 +54,9 @@ A genie lamp sits in the center of the screen. A vertical amplitude meter in the
 
 | Value | Character | Probability |
 |-------|-----------|-------------|
-| `0` | <img align="left" src="assets/images/in/red_mermaid.png" alt="Red Mermaid" height="48" width="auto" /> Red Mermaid (yes, from a genie lamp) | 30% |
+| `0` | <img align="left" src="assets/images/in/red_mermaid.png" alt="Red Mermaid" height="48" width="auto" /> Red Mermaid (yes, from genie lamp😁) | 30% |
 | `1` | <img align="left" src="assets/images/in/ginie.png" alt="Genie" height="48" width="auto" /> Genie | 35% |
-| `2` | <img align="left" src="assets/images/in/blue_mermaid.png" alt="Blue Mermaid" height="48" width="auto" /> Blue Mermaid (also from a genie lamp) | 35% |
+| `2` | <img align="left" src="assets/images/in/blue_mermaid.png" alt="Blue Mermaid" height="48" width="auto" /> Blue Mermaid | 35% |
 
 ### Step 4 — Make Your Wish
 The character that emerged from the lamp greets you via text-to-speech and asks you to type your wish. Then it asks you to leave a note for the world. Both steps have a skip option, but after all that screaming, why would you?
@@ -120,6 +121,12 @@ That's it. There is no restart button. The app is done with you.
 ### Why a Cloudflare Worker in the middle?
 
 You cannot safely embed a GitHub token inside a mobile APK it would be publicly extractable. The Cloudflare Worker holds the GitHub token securely as an environment secret. The app only needs a rotating API key to talk to the Worker, which is far easier to rotate without a new app release.
+
+#### Why still use an API key if it can be extracted from the APK?
+
+Yes, an API key inside an APK isn’t fully secure and can be extracted with enough knowledge. But it still adds a useful layer of protection.
+Without any key, the API would be completely open and anyone could spam it easily. Requiring a key creates a basic barrier that prevents casual misuse and automated abuse.
+It’s not perfect security, but **it’s a practical way to reduce spam and keep things under control.**
 
 ---
 

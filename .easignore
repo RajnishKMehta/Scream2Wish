@@ -54,6 +54,7 @@ LICENSE
 /coverage
 /scripts
 action-trigger-worker/
+website/
 
 # Editor & IDE config
 .vscode/
