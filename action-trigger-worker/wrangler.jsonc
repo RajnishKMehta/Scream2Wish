@@ -13,12 +13,5 @@
 	"upload_source_maps": true,
 	"compatibility_flags": [
 		"nodejs_compat"
-	],
-	/**
-	 * Environment Variables
-	 */
-	"vars": {
-		"API_KEY": "production_value",
-		"GITHUB_TOKEN": "production_value"
-	}
+	]
 }
