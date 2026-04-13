@@ -27,6 +27,14 @@ It solves zero real-world problems. It does exactly what it says. That's the poi
 
 ---
 
+## Download
+
+[![Download APK](https://img.shields.io/badge/Download%20APK-Latest%20Release-ef4444?style=for-the-badge&logo=android)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest)
+
+Install on any Android device (sideloading required — enable "Install from unknown sources" in settings).
+
+---
+
 ## The Full Experience
 
 ### Step 1 — Permissions Gate
@@ -141,57 +149,6 @@ You cannot safely embed a GitHub token inside a mobile APK — it would be publi
 
 ---
 
-## Repository Structure
-
-```
-Scream2Wish/
-├── app/                          # Expo Router screens
-│   ├── _layout.tsx               # Root layout — calls trySendWish on mount
-│   ├── index.tsx                 # Permission gate
-│   ├── perm.tsx                  # Trapped screen (permissions denied)
-│   ├── login.tsx                 # Fake login
-│   ├── main.tsx                  # Scream detection + lamp animation
-│   └── end.tsx                   # Wish input + random note display
-│
-├── src/
-│   ├── lib/
-│   │   ├── storage.ts            # MMKV storage instance
-│   │   ├── screamManager.ts      # Mic metering + progress logic
-│   │   ├── speechManager.ts      # TTS with audio ducking
-│   │   ├── vibrateManager.ts     # Looping vibration management
-│   │   ├── audioManager.ts       # Sound effect playback
-│   │   ├── permissionManager.ts  # Permission request + status checks
-│   │   ├── passValidator.ts      # Login password validation
-│   │   ├── fetchWish.ts          # Fetch a random wish from GitHub
-│   │   └── sendWish.ts           # Send wish to Cloudflare Worker
-│   │
-│   ├── components/
-│   │   ├── ImageOverlay.tsx      # Full-screen image layer
-│   │   ├── LoginLoading.tsx      # Meme loading screen after login
-│   │   ├── VideoOverlay.tsx      # Video overlay for login punishment
-│   │   └── WishInputComponent.tsx # 2-step wish + note input flow
-│   │
-│   └── stylez/                   # Centralized design system
-│       ├── colors.ts
-│       ├── typography.ts
-│       ├── spacing.ts
-│       ├── layout.ts
-│       ├── components.ts
-│       ├── main.ts
-│       ├── end.ts
-│       └── index.ts
-│
-├── action-trigger-worker/        # Cloudflare Worker source
-│   └── src/index.ts
-│
-├── assets/                       # Images, audio, video
-├── .github/workflows/            # EAS build + OTA automation
-├── app.json
-└── package.json
-```
-
----
-
 ## Local Storage Reference
 
 | Key | Value | Description |
@@ -252,14 +209,6 @@ cd action-trigger-worker
 pnpm install
 npx wrangler deploy
 ```
-
----
-
-## Download
-
-[![Download APK](https://img.shields.io/badge/Download%20APK-Latest%20Release-ef4444?style=for-the-badge&logo=android)](https://github.com/RajnishKMehta/Scream2Wish/releases/latest)
-
-Install on any Android device (sideloading required — enable "Install from unknown sources" in settings).
 
 ---
 
