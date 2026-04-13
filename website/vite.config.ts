@@ -3,18 +3,22 @@ import path from 'path'
 
 export default defineConfig({
   base: '/Scream2Wish/',
-  publicDir: path.resolve(__dirname, '../public'),
+  publicDir: path.resolve(__dirname, '../assets/images'),
 
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@cmp': path.resolve(__dirname, './src/components'),
-      '@root': path.resolve(__dirname, '../'),
-    }
+    },
+  },
+
+  server: {
+    port: 5173,
+    host: true,
+    allowedHosts: true,
   },
 
   build: {
     outDir: 'dist',
-    emptyOutDir: true
-  }
+    emptyOutDir: true,
+  },
 })

@@ -1,0 +1,75 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'website/**'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      website_changed: ${{ steps.filter.outputs.website }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Check if website/ changed
+        id: filter
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- website/ | wc -l)
+          if [ "$CHANGED" -gt 0 ]; then
+            echo "website=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "website=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: check-changes
+    if: needs.check-changes.outputs.website_changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install pnpm
+        run: npm i -g pnpm
+
+      - name: Install website dependencies
+        working-directory: website
+        run: pnpm install --frozen-lockfile
+
+      - name: Build website
+        working-directory: website
+        run: pnpm build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
