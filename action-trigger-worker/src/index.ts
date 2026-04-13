@@ -12,6 +12,7 @@ export default {
 			});
 		}
 
+		// node -e "console.log(require('crypto').randomBytes(12).toString('hex'))"
 		const apiKey = request.headers.get('x-api-key');
 		if (!apiKey || apiKey !== env.API_KEY) {
 			return new Response(
