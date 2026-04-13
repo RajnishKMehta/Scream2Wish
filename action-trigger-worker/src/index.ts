@@ -5,13 +5,6 @@ export interface Env {
 
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
-		if (!env.API_KEY || !env.GITHUB_TOKEN) {
-			return new Response(
-				JSON.stringify({ error: 'Server configuration missing: API_KEY or GITHUB_TOKEN' }),
-				{ status: 500, headers: { 'Content-Type': 'application/json' } }
-			);
-		}
-
 		if (request.method !== 'POST') {
 			return new Response(null, {
 				status: 405,
