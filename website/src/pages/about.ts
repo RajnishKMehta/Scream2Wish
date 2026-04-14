@@ -117,15 +117,17 @@ export function renderAbout(): string {
           <div class="tech-grid">
             ${[
               { name: 'Expo + React Native', desc: 'Core app framework' },
-              { name: 'expo-audio', desc: 'Real-time scream detection & playin meme sounds' },
-              { name: 'expo-speech', desc: 'Genie text-to-speech' },
-              { name: 'expo-video', desc: 'Punishing video overlay' },
-              { name: 'react-native-reanimated', desc: 'Smooth animations' },
               { name: 'Cloudflare Workers', desc: 'Secure API proxy' },
               { name: 'GitHub Actions', desc: 'Wish persistence pipeline' },
               { name: 'Vite + TypeScript', desc: 'This website' },
               { name: 'GitHub Pages', desc: 'Hosting this website' },
               { name: 'EAS Build', desc: 'Automated APK builds' },
+              { name: 'react-native-mmkv', desc: 'Fast local storage for wishes and state' },
+              { name: 'react-native-reanimated', desc: 'Smooth animations' },
+              // { name: 'expo-speech', desc: 'Genie text-to-speech' },
+              // { name: 'expo-audio', desc: 'Microphone input for scream detection and meme sound playback' },
+              // { name: 'expo-video', desc: 'Punishing video overlay' },
+              // { name: 'expo-router', desc: 'File-based navigation system' },
             ]
               .map(
                 (t) => /* html */ `
