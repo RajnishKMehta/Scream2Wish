@@ -1,7 +1,5 @@
 import { CONFIG } from '@/config'
-import { renderNavbar } from '@/components/navbar'
-import { renderSkeletons } from '@/components/loader'
-import { renderWishCard, updateCardContent } from '@/components/wishCard'
+import { renderNavbar, renderSkeletons, renderWishCard, updateCardContent, renderCreator } from '@cmp'
 import { fetchIndex, fetchBatch, getPageIds, getTotalPages } from '@/services/wishes'
 import type { SortMode, DisplayMode, PageState, WishData } from '@/types'
 
@@ -46,6 +44,7 @@ export function renderHome(): string {
           </div>
           <div id="pagination" class="pagination" style="display:none"></div>
         </section>
+        ${renderCreator()}
       </div>
     </main>
     ${renderFooter()}
@@ -55,12 +54,11 @@ export function renderHome(): string {
 function renderHero(): string {
   return /* html */ `
     <div class="hero">
-      <img src="images/logo16x9.png" alt="${CONFIG.app.name}" class="hero-logo" />
       <h1 class="hero-title">
         Public <span>Wishes</span> Board
       </h1>
       <p class="hero-subtitle">
-        Every wish screamed into the void — read in real time.
+        Every wish screamed into the void appears here in real time.
       </p>
       <div class="hero-actions">
         <a href="${CONFIG.links.apkDownload}" class="btn btn-primary" target="_blank" rel="noopener">
@@ -249,6 +247,15 @@ function bindPaginationEvents(totalPages: number) {
   })
 }
 
+let keyboardHandler: ((e: KeyboardEvent) => void) | null = null
+
+export function cleanupHome() {
+  if (keyboardHandler) {
+    window.removeEventListener('keydown', keyboardHandler)
+    keyboardHandler = null
+  }
+}
+
 export function initHome() {
   state = {
     sortMode: CONFIG.defaults.sortMode,
@@ -287,4 +294,28 @@ export function initHome() {
       updateDisplayMode(displayKey)
     }
   })
+
+  cleanupHome()
+  keyboardHandler = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      const prevBtn = document.getElementById('prev-btn') as HTMLButtonElement | null
+      if (prevBtn && !prevBtn.disabled && state.currentPage > 0) {
+        state.currentPage--
+        void loadPage()
+      }
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      const nextBtn = document.getElementById('next-btn') as HTMLButtonElement | null
+      if (nextBtn && !nextBtn.disabled) {
+        const totalPages = getTotalPages(allIds)
+        const isLast = state.sortMode !== 'random' && state.currentPage >= totalPages - 1
+        if (!isLast) {
+          state.currentPage++
+          void loadPage()
+        }
+      }
+    }
+  }
+  window.addEventListener('keydown', keyboardHandler)
 }

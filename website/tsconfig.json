@@ -7,11 +7,11 @@
     "moduleResolution": "bundler",
     "moduleDetection": "force",
 
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"],
+      "@cmp": ["./src/components/index.ts"],
+      "@cmp/*": ["./src/components/*"]
     },
-    "ignoreDeprecations": "6.0",
 
     "types": ["vite/client"],
 

@@ -3,9 +3,9 @@ import type { SortMode, DisplayMode } from '@/types'
 export const CONFIG = {
   app: {
     name: 'Scream2Wish',
-    tagline: 'Break a Genie Lamp by Screaming at Your Phone',
+    tagline: 'Break a Genie Lamp by Screaming',
     description:
-      'A completely useless, mildly chaotic Android app that forces you to scream as loud as you can to break a genie\'s lamp — and only then lets you make a wish.',
+      'A mildly chaotic Android app that forces you to scream as loud as you can to break a genie\'s lamp and only then lets you make a wish.',
     repoUrl: 'https://github.com/RajnishKMehta/Scream2Wish',
     wishesRepoUrl: 'https://github.com/RajnishKMehta/Scream2Wish-wishes',
     author: 'Rajnish Mehta',

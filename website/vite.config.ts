@@ -3,11 +3,13 @@ import path from 'path'
 
 export default defineConfig({
   base: '/Scream2Wish/',
-  publicDir: path.resolve(__dirname, '../assets/images'),
+  publicDir: path.resolve(__dirname, '../assets'),
 
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@root': path.resolve(__dirname, '../'),
+      '@cmp': path.resolve(__dirname, './src/components'),
     },
   },
 

@@ -1,5 +1,5 @@
 import '@/styles/global.css'
-import { renderHome, initHome } from '@/pages/home'
+import { renderHome, initHome, cleanupHome } from '@/pages/home'
 import { renderAbout } from '@/pages/about'
 
 function getRoute(): 'home' | 'about' {
@@ -8,6 +8,8 @@ function getRoute(): 'home' | 'about' {
 }
 
 function navigate() {
+  cleanupHome()
+
   const route = getRoute()
   const root = document.getElementById('root')
   if (!root) return
