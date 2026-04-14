@@ -15,12 +15,6 @@
 
 </div>
 
-# ⚠️warning
-> v1.0.0 is not working properly
-> update coming under 2 hours
-
----
-
 ## What Is This?
 
 Scream2Wish is a completely 100% useful👀, mildly chaotic Android app that forces you to **scream as loud as you can** to break a genie's lamp and only then lets you make a wish.
@@ -66,7 +60,13 @@ A genie lamp sits in the center of the screen. A vertical amplitude meter in the
 The character that emerged from the lamp greets you via text-to-speech and asks you to type your wish. Then it asks you to leave a note for the world. Both steps have a skip option, but after all that screaming, why would you?
 
 ### Step 5 — The End
-Your wish and note are queued to be sent silently in the background to the [Scream2Wish-wishes](https://github.com/RajnishKMehta/Scream2Wish-wishes) repository. Meanwhile, you receive a random stranger's note in return their name, their message, the timestamp of when they screamed. Below that, your own note is shown back to you. You can share your wish.
+The end screen shows two tabs: **Random Note** (default) and **My Note**.
+
+**Random Note** fetches a stranger's message from the public wishes repo — their name, their note, and when they screamed. If the fetch fails, you see the error reason and a retry button.
+
+**My Note** shows the note you left, plus the live send status. The app automatically retries sending up to 6 times (3-second gaps). If all 6 attempts fail (and the error isn't an auth rejection), a **Retry send** button appears. Auth errors are skipped during the session but retried fresh on next app open. Once sent, a green indicator confirms your note is out in the world.
+
+You can share your wish at any point.
 
 That's it. There is no restart button. The app is done with you.
 
@@ -170,6 +170,8 @@ It’s not perfect security, but **it’s a practical way to reduce spam and kee
 | `mynote` | `string` | any | The user's personal note (required, not optional) |
 | `iscompleted` | `boolean` | `true` / `false` | Whether the user completed the wish + note flow |
 | `issent` | `boolean` | `true` / `false` | Whether the wish was successfully sent to the server |
+| `sendAttempts` | `number` | `0`–`6` | How many send attempts have been made (persists across sessions) |
+| `sendLastError` | `string` | any | The last error message when sending failed |
 | `rnote` | `string` | any | A random stranger's note fetched from the wishes repo |
 | `rnotefrom` | `string` | any | The name of who wrote that note |
 | `rnoteat` | `string` | unix ms as string | When that stranger screamed (displayed as human-readable local time) |

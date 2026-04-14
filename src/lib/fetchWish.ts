@@ -13,26 +13,42 @@ interface WishData {
   at: number;
 }
 
-export async function fetchAndStoreRandomWish(): Promise<void> {
+export interface FetchWishResult {
+  ok: boolean;
+  errorReason?: string;
+}
+
+export async function fetchAndStoreRandomWish(): Promise<FetchWishResult> {
   try {
     const indexRes = await fetch(WISHES_INDEX_URL);
-    if (!indexRes.ok) return;
+    if (!indexRes.ok) {
+      return { ok: false, errorReason: `Could not reach the wishes server (status ${indexRes.status}).` };
+    }
 
     const ids: string[] = await indexRes.json();
-    if (!Array.isArray(ids) || ids.length === 0) return;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return { ok: false, errorReason: 'No wishes have been shared yet. Be the first!' };
+    }
 
     const randomId = ids[Math.floor(Math.random() * ids.length)];
-    if (!randomId) return;
+    if (!randomId) {
+      return { ok: false, errorReason: 'Could not select a random wish.' };
+    }
 
     const wishRes = await fetch(`${WISH_BASE_URL}/${randomId}.json`);
-    if (!wishRes.ok) return;
+    if (!wishRes.ok) {
+      return { ok: false, errorReason: `Could not load the selected wish (status ${wishRes.status}).` };
+    }
 
     const data: WishData = await wishRes.json();
 
     Storage.set('rnote', data.note ?? '');
     Storage.set('rnotefrom', data.from ?? '');
     Storage.set('rnoteat', String(data.at ?? 0));
-  } catch {
-    // silently fail — this is a background operation
+
+    return { ok: true };
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'Unknown network error.';
+    return { ok: false, errorReason: `Network error: ${msg}` };
   }
 }

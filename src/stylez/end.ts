@@ -12,15 +12,47 @@ export const EndStyles = StyleSheet.create({
   scroll: {
     flexGrow: 1,
     paddingHorizontal: Spacing.screen,
-    paddingTop: 60,
-    paddingBottom: 60,
+    paddingTop: 56,
+    paddingBottom: 64,
     alignItems: 'center',
   },
 
   characterImage: {
-    width: 200,
-    height: 200,
+    width: 180,
+    height: 180,
     marginBottom: Spacing.xxl,
+  },
+
+  tabBar: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: Colors.bg.card,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.border.neutral,
+    padding: 4,
+    marginBottom: Spacing.xl,
+  },
+
+  tabItem: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    alignItems: 'center',
+    borderRadius: Radius.full,
+  },
+
+  tabItemActive: {
+    backgroundColor: Colors.red.primary,
+  },
+
+  tabLabel: {
+    fontSize: FontSize.base,
+    fontWeight: FontWeight.semibold,
+    color: Colors.text.dimmer,
+  },
+
+  tabLabelActive: {
+    color: Colors.text.white,
   },
 
   noteCard: {
@@ -31,16 +63,7 @@ export const EndStyles = StyleSheet.create({
     borderColor: Colors.border.neutral,
     padding: Spacing.xxl,
     marginBottom: Spacing.xl,
-  },
-
-  noteCardHighlight: {
-    width: '100%',
-    backgroundColor: Colors.bg.redTint,
-    borderRadius: Radius.xxl,
-    borderWidth: 1,
-    borderColor: Colors.border.redLight,
-    padding: Spacing.xxl,
-    marginBottom: Spacing.xl,
+    minHeight: 160,
   },
 
   noteSectionLabel: {
@@ -49,21 +72,22 @@ export const EndStyles = StyleSheet.create({
     color: Colors.text.dimmer,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.lg,
   },
 
   noteText: {
-    fontSize: FontSize.body,
+    fontSize: FontSize.heading3,
+    fontWeight: FontWeight.medium,
     color: Colors.text.white,
-    lineHeight: 22,
-    marginBottom: Spacing.sm,
+    lineHeight: 32,
+    marginBottom: Spacing.lg,
   },
 
   noteMetaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-    marginTop: 2,
+    marginTop: 4,
   },
 
   noteMetaText: {
@@ -76,6 +100,94 @@ export const EndStyles = StyleSheet.create({
     height: 3,
     borderRadius: 999,
     backgroundColor: Colors.text.ghost,
+  },
+
+  fetchLoadingWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    paddingVertical: Spacing.lg,
+  },
+
+  fetchLoadingText: {
+    fontSize: FontSize.body,
+    color: Colors.text.subtle,
+  },
+
+  fetchErrorText: {
+    fontSize: FontSize.body,
+    color: Colors.red.label,
+    lineHeight: 22,
+    marginBottom: Spacing.xl,
+  },
+
+  retryBtn: {
+    alignSelf: 'flex-start',
+    backgroundColor: Colors.bg.surface,
+    borderRadius: Radius.lg,
+    borderWidth: 1,
+    borderColor: Colors.border.neutral,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.xl,
+    marginTop: 4,
+  },
+
+  retryBtnText: {
+    fontSize: FontSize.base,
+    fontWeight: FontWeight.semibold,
+    color: Colors.text.muted,
+  },
+
+  sendStatusWrap: {
+    marginTop: Spacing.xl,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border.neutral,
+    paddingTop: Spacing.lg,
+    gap: Spacing.sm,
+  },
+
+  sendStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+
+  sendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+
+  sendDotGreen: {
+    backgroundColor: Colors.green.bright,
+  },
+
+  sendDotAmber: {
+    backgroundColor: Colors.amber.primary,
+  },
+
+  sendDotRed: {
+    backgroundColor: Colors.red.primary,
+  },
+
+  sendStatusSent: {
+    fontSize: FontSize.base,
+    fontWeight: FontWeight.semibold,
+    color: Colors.green.label,
+  },
+
+  sendStatusRetrying: {
+    fontSize: FontSize.base,
+    color: Colors.amber.primary,
+    fontWeight: FontWeight.medium,
+  },
+
+  sendStatusError: {
+    fontSize: FontSize.base,
+    color: Colors.red.label,
+    fontWeight: FontWeight.medium,
+    flex: 1,
   },
 
   shareBtn: {
