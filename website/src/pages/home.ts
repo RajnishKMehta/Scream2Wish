@@ -60,23 +60,27 @@ function renderHero(): string {
       <p class="hero-subtitle">
         Every wish screamed into the void appears here in real time.
       </p>
-      <div class="hero-actions">
-        <a href="${CONFIG.links.apkDownload}" class="btn btn-primary" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-          Download APK
-        </a>
-        <a href="${CONFIG.links.devToPost}" class="btn btn-ghost" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
-          </svg>
-          Dev.to Post
-        </a>
+      <div class="hero-actions-row">
+        <img src="images/splash-light.png" alt="splash light" class="hero-splash hero-splash-left" />
+        <div class="hero-actions">
+          <a href="${CONFIG.links.apkDownload}" class="btn btn-primary" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download APK
+          </a>
+          <a href="${CONFIG.links.devToPost}" class="btn btn-ghost" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            Dev.to Post
+          </a>
+        </div>
+        <img src="images/splash-dark.png" alt="splash dark" class="hero-splash hero-splash-right" />
       </div>
     </div>
   `

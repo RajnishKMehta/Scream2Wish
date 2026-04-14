@@ -160,8 +160,20 @@ ul, ol { list-style: none; }
   margin-left: auto;
   margin-right: auto;
 }
-.hero-actions {
+.hero-actions-row {
   margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.hero-splash {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.hero-actions {
   display: flex;
   gap: 12px;
   justify-content: center;
@@ -656,6 +668,7 @@ ul, ol { list-style: none; }
   .wish-card { padding: 15px 16px; }
   .card-content { font-size: 0.93rem; }
   .about-card { padding: 16px 18px; }
+  .hero-splash { display: none; }
   .logo-icon  { display: none; }
   .logo-text  { display: none; }
   .logo-wide  { display: block; height: 68px; width: auto; }
