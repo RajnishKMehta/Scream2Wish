@@ -21,6 +21,7 @@ import {
   startSendWithRetry,
   retryOnceSend,
   SendState,
+  MAX_SEND_RETRIES,
 } from '@lib/sendWish';
 import { WishInputComponent } from '@cmp/WishInputComponent';
 import { EndStyles } from '@stylez';
@@ -53,18 +54,18 @@ function formatTimestamp(ms: number): string {
 }
 
 export default function EndScreen() {
-  const [ginie, setGinie]             = useState<number | null>(null);
-  const [showInput, setShowInput]     = useState(false);
-  const [activeTab, setActiveTab]     = useState<Tab>('random');
+  const [ginie, setGinie]               = useState<number | null>(null);
+  const [showInput, setShowInput]       = useState(false);
+  const [activeTab, setActiveTab]       = useState<Tab>('random');
 
-  const [rnote, setRnote]             = useState('');
-  const [rnotefrom, setRnotefrom]     = useState('');
-  const [rnoteat, setRnoteat]         = useState('');
+  const [rnote, setRnote]               = useState('');
+  const [rnotefrom, setRnotefrom]       = useState('');
+  const [rnoteat, setRnoteat]           = useState('');
   const [fetchLoading, setFetchLoading] = useState(false);
-  const [fetchError, setFetchError]   = useState('');
+  const [fetchError, setFetchError]     = useState('');
 
-  const [mynote, setMynote]           = useState('');
-  const [sendState, setSendState]     = useState<SendState>(getSendState());
+  const [mynote, setMynote]             = useState('');
+  const [sendState, setSendState]       = useState<SendState>(getSendState());
   const [sendRetrying, setSendRetrying] = useState(false);
 
   const sendRetryRef = useRef(false);
@@ -100,6 +101,7 @@ export default function EndScreen() {
     } else {
       loadNotes();
       doFetchRandomWish();
+      triggerSendRetry();
     }
   }, []);
 
@@ -195,6 +197,9 @@ export default function EndScreen() {
   const rnoteatFormatted = formatTimestamp(rnoteatMs);
   const completed = Storage.getBoolean('iscompleted') === true;
 
+  const showRetryBtn =
+    !sendRetrying && !sendState.issent && (sendState.maxed || sendState.unauthorized);
+
   return (
     <ScrollView
       style={EndStyles.screen}
@@ -230,7 +235,7 @@ export default function EndScreen() {
 
       {activeTab === 'random' && (
         <View style={EndStyles.noteCard}>
-          <Text style={EndStyles.noteSectionLabel}>A note from the universe</Text>
+          <Text style={EndStyles.noteSectionLabel}>Note For You</Text>
 
           {fetchLoading ? (
             <View style={EndStyles.fetchLoadingWrap}>
@@ -289,38 +294,49 @@ export default function EndScreen() {
               <View style={EndStyles.sendStatusRow}>
                 <ActivityIndicator color="#f59e0b" size="small" style={{ marginRight: 8 }} />
                 <Text style={EndStyles.sendStatusRetrying}>
-                  Sending... ({sendState.attempts}/{6})
+                  Sending... ({sendState.attempts}/{MAX_SEND_RETRIES})
                 </Text>
               </View>
             ) : sendState.unauthorized ? (
-              <View style={EndStyles.sendStatusRow}>
-                <View style={[EndStyles.sendDot, EndStyles.sendDotAmber]} />
-                <Text style={EndStyles.sendStatusError}>
-                  Could not send — will retry on next open
-                </Text>
-              </View>
+              <>
+                <View style={EndStyles.sendStatusRow}>
+                  <View style={[EndStyles.sendDot, EndStyles.sendDotAmber]} />
+                  <Text style={EndStyles.sendStatusError}>
+                    Server rejected the request (unauthorized).
+                  </Text>
+                </View>
+                {showRetryBtn && (
+                  <TouchableOpacity
+                    style={EndStyles.retryBtn}
+                    onPress={handleManualRetrySend}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={EndStyles.retryBtnText}>Retry send</Text>
+                  </TouchableOpacity>
+                )}
+              </>
             ) : sendState.maxed ? (
               <>
                 <View style={EndStyles.sendStatusRow}>
                   <View style={[EndStyles.sendDot, EndStyles.sendDotRed]} />
-                  <Text style={EndStyles.sendStatusError} numberOfLines={2}>
+                  <Text style={EndStyles.sendStatusError} numberOfLines={3}>
                     {sendState.lastError || 'Failed to send after 6 tries.'}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  style={EndStyles.retryBtn}
-                  onPress={handleManualRetrySend}
-                  activeOpacity={0.8}
-                >
-                  <Text style={EndStyles.retryBtnText}>Retry send</Text>
-                </TouchableOpacity>
+                {showRetryBtn && (
+                  <TouchableOpacity
+                    style={EndStyles.retryBtn}
+                    onPress={handleManualRetrySend}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={EndStyles.retryBtnText}>Retry send</Text>
+                  </TouchableOpacity>
+                )}
               </>
             ) : sendState.attempts > 0 ? (
               <View style={EndStyles.sendStatusRow}>
                 <View style={[EndStyles.sendDot, EndStyles.sendDotAmber]} />
-                <Text style={EndStyles.sendStatusRetrying}>
-                  Waiting to send...
-                </Text>
+                <Text style={EndStyles.sendStatusRetrying}>Waiting to send...</Text>
               </View>
             ) : null}
           </View>

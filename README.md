@@ -64,7 +64,7 @@ The end screen shows two tabs: **Random Note** (default) and **My Note**.
 
 **Random Note** fetches a stranger's message from the public wishes repo — their name, their note, and when they screamed. If the fetch fails, you see the error reason and a retry button.
 
-**My Note** shows the note you left, plus the live send status. The app automatically retries sending up to 6 times (3-second gaps). If all 6 attempts fail (and the error isn't an auth rejection), a **Retry send** button appears. Auth errors are skipped during the session but retried fresh on next app open. Once sent, a green indicator confirms your note is out in the world.
+**My Note** shows the note you left, plus the live send status. The app automatically retries sending up to **6 times** per session (immediate → 3 s → 5 s → 5 s → …). The attempt counter lives in memory and resets on every app open, so you always get 6 fresh auto-retries. If all 6 fail, a **Retry send** button appears. A 401/403 auth error stops auto-retries for the session (but manual retry still works and auto-retry resumes on next open). Once sent, a green indicator confirms your note is out in the world.
 
 You can share your wish at any point.
 
@@ -170,8 +170,6 @@ It’s not perfect security, but **it’s a practical way to reduce spam and kee
 | `mynote` | `string` | any | The user's personal note (required, not optional) |
 | `iscompleted` | `boolean` | `true` / `false` | Whether the user completed the wish + note flow |
 | `issent` | `boolean` | `true` / `false` | Whether the wish was successfully sent to the server |
-| `sendAttempts` | `number` | `0`–`6` | How many send attempts have been made (persists across sessions) |
-| `sendLastError` | `string` | any | The last error message when sending failed |
 | `rnote` | `string` | any | A random stranger's note fetched from the wishes repo |
 | `rnotefrom` | `string` | any | The name of who wrote that note |
 | `rnoteat` | `string` | unix ms as string | When that stranger screamed (displayed as human-readable local time) |
