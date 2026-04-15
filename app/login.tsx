@@ -22,12 +22,17 @@ import {
 } from 'lucide-react-native';
 import { validatePassword } from '@lib/passValidator';
 import { Storage } from '@lib/storage';
-import { playChiSasur } from '@lib/audioManager';
+import { playChiSasur, stopPlaying } from '@lib/audioManager';
+import { speak } from '@lib/speechManager';
 import { Colors, Layout, Components, Typography } from '@stylez';
 import { VideoOverlay } from '@cmp/VideoOverlay';
 import { LoadingScreen } from '@cmp/LoginLoading';
+import { RoastOverlay } from '@cmp/RoastOverlay';
 
 const NAME_MAX = 30;
+
+const ROAST_TTS =
+  "I've seen a lot of chutiyas in my life but like you, neverrr!";
 
 function isValidName(name: string): boolean {
   const trimmed = name.trim();
@@ -42,6 +47,7 @@ export default function LoginScreen() {
   const [passErrorVisible, setPassErrorVisible] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [videoVisible, setVideoVisible] = useState(false);
+  const [roastVisible, setRoastVisible] = useState(false);
   const [memeLoading, setMemeLoading] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -100,11 +106,19 @@ export default function LoginScreen() {
     setVideoVisible(false);
 
     if (!nameValid || !passValidation.success) {
-      setWrongAttempts((prev) => prev + 1);
+      const newAttempts = wrongAttempts + 1;
+      setWrongAttempts(newAttempts);
       setNameErrorVisible(true);
       setPassErrorVisible(true);
       shakeError();
-      await playChiSasur();
+
+      if (newAttempts >= 3) {
+        setRoastVisible(true);
+        stopPlaying();
+        speak(ROAST_TTS, { rate: 0.9 });
+      } else {
+        await playChiSasur();
+      }
       return;
     }
 
@@ -219,7 +233,7 @@ export default function LoginScreen() {
                     onChangeText={(t) => {
                       setPassword(t);
                       setPassErrorVisible(false);
-                      if (wrongAttempts >= 2 && !videoVisible) {
+                      if (!roastVisible && wrongAttempts >= 1 && !videoVisible) {
                         setVideoVisible(true);
                       }
                     }}
@@ -276,13 +290,15 @@ export default function LoginScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {videoVisible && (
+      {videoVisible && !roastVisible && (
         <VideoOverlay
           source={require('@video/math_effect.mp4')}
           loop
           fullScreen
         />
       )}
+
+      <RoastOverlay visible={roastVisible} />
 
       {memeLoading && (
         <LoadingScreen

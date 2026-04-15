@@ -79,7 +79,7 @@ export function renderAbout(): string {
               },
               {
                 title: 'Joke Login',
-                desc: 'A suspiciously serious login screen asks for your real name and a password. The name is used throughout the experience. The password has a specific validation rule, figure it out yourself.',
+                desc: 'A suspiciously serious login screen asks for your real name and a password. The name is used throughout the experience. The password has a specific validation rule figure it out yourself. One wrong attempt starts a background video. Three wrong attempts and a roast panel slides up: it mocks you, reveals the password with a copy button, cuts the video and sound entirely, and refuses to leave.',
               },
               {
                 title: 'The Lamp',
@@ -91,7 +91,7 @@ export function renderAbout(): string {
               },
               {
                 title: 'The End',
-                desc: "Your wish is queued to be sent to the public repository. You receive a random stranger's note in return. There is no restart button. The app is done with you.",
+                desc: "Your wish is queued to be sent to the public repository. You get two tabs — a random stranger's note and your own with live send status and retry controls. Below that, a creator card links to the public wishes board and shows the creator's profile. There is no restart button. The app is done with you.",
               },
             ]
               .map(

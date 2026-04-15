@@ -38,8 +38,13 @@ Install on Android 10+ devices (sideloading required enable "Install from unknow
 ### Step 1 — Permissions Gate
 The app opens with an animated permission screen asking for microphone access (to detect your screams) and vibration (to annoy you while you're idle). You cannot proceed without granting both. The back button is "defective."
 
-### Step 2 — joke Login
-A suspiciously serious login screen asks for your **real name** and a **password**. The name is used throughout the experience. The password has a specific validation rule figure it out yourself. Enter it wrong enough times and a video overlay starts playing in the background to make you regret your life choices. A sound effect also plays. You have been warned.
+### Step 2 — Joke Login
+A suspiciously serious login screen asks for your **real name** and a **password**. The name is used throughout the experience. The password has a specific validation rule — figure it out yourself.
+
+- **1 wrong attempt** — a video overlay starts playing in the background.
+- **3 wrong attempts** — a roast panel slides up from the bottom. It picks one of several messages mocking your inability to read placeholder text, reveals the correct password with a copy button, and **does not go away**. After the roast panel appears, the background video and sound cut out entirely. Subsequent wrong attempts trigger text-to-speech instead.
+
+You have been warned.
 
 ### Step 3 — The Lamp
 A countdown from 5. Then the main event.
@@ -67,6 +72,8 @@ The end screen shows two tabs: **Random Note** (default) and **My Note**.
 **My Note** shows the note you left, plus the live send status. The app automatically retries sending up to **6 times** per session (immediate → 3 s → 5 s → 5 s → …). The attempt counter lives in memory and resets on every app open, so you always get 6 fresh auto-retries. If all 6 fail, a **Retry send** button appears. A 401/403 auth error stops auto-retries for the session (but manual retry still works and auto-retry resumes on next open). Once sent, a green indicator confirms your note is out in the world.
 
 You can share your wish at any point.
+
+Below the notes a **creator card** shows: a link to the public Scream2Wish website (where all wishes and notes are visible), and a short about section for the creator. The profile picture alternates between a local photo and the GitHub avatar — fetched only once a random note has loaded. The switch animation is a crossfade, and which image appears first is randomised on every app open.
 
 That's it. There is no restart button. The app is done with you.
 
@@ -145,6 +152,7 @@ It’s not perfect security, but **it’s a practical way to reduce spam and kee
 | [expo-video](https://docs.expo.dev/versions/latest/sdk/video/) | Punishing video overlay on the login screen |
 | [expo-router](https://expo.github.io/router) | File-based navigation |
 | [expo-updates](https://docs.expo.dev/eas-update/introduction/) | OTA updates — no store release required for fixes |
+| [expo-clipboard](https://docs.expo.dev/versions/latest/sdk/clipboard/) | Clipboard access for copying the password from the roast panel |
 | [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) | Fast local key-value storage |
 | [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) | Smooth animations |
 | [lucide-react-native](https://lucide.dev) | Icons |

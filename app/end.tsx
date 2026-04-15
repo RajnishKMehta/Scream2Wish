@@ -24,6 +24,7 @@ import {
   MAX_SEND_RETRIES,
 } from '@lib/sendWish';
 import { WishInputComponent } from '@cmp/WishInputComponent';
+import { CreatorCard } from '@cmp/CreatorCard';
 import { EndStyles } from '@stylez';
 
 const IMG_GINIE        = require('@img/in/ginie.png');
@@ -352,6 +353,8 @@ export default function EndScreen() {
           <Text style={EndStyles.shareBtnText}>Share my wish</Text>
         </TouchableOpacity>
       ) : null}
+
+      <CreatorCard rnoteLoaded={rnote !== ''} />
     </ScrollView>
   );
 }
