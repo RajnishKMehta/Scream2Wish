@@ -1,17 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
+  PanResponder,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
-import { Copy, Check } from 'lucide-react-native';
+import { Copy, Check, Eye, EyeOff } from 'lucide-react-native';
 import { Colors, Spacing, Radius, FontSize, FontWeight } from '@stylez';
 
 const PASSWORD = 'PassW0RD';
+const LOCK_MS  = 1200;
 
 const ROASTS = [
   {
@@ -57,54 +59,124 @@ const ROASTS = [
 ];
 
 type Props = {
-  visible: boolean;
+  onHide: () => void;
 };
 
-export function RoastOverlay({ visible }: Props) {
+export function RoastOverlay({ onHide }: Props) {
   const slideAnim    = useRef(new Animated.Value(500)).current;
   const backdropAnim = useRef(new Animated.Value(0)).current;
-  const [copied, setCopied] = useState(false);
-  const [roast]             = useState(() => ROASTS[Math.floor(Math.random() * ROASTS.length)]);
-  const copyTimerRef        = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.timing(backdropAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 380,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible]);
+  const [copied, setCopied]   = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
+  const [roast]               = useState(() => ROASTS[Math.floor(Math.random() * ROASTS.length)]);
 
-  useEffect(() => {
-    return () => {
-      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
-    };
+  const lockRef      = useRef(true);
+  const lockTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onHideRef    = useRef(onHide);
+
+  useEffect(() => { onHideRef.current = onHide; }, [onHide]);
+
+  const dismissSheet = useCallback(() => {
+    if (lockRef.current) return;
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 600,
+        duration: 260,
+        easing: Easing.in(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(backdropAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+    ]).start(() => { onHideRef.current(); });
   }, []);
 
-  if (!visible) return null;
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gs) =>
+        !lockRef.current && gs.dy > 8 && Math.abs(gs.dy) > Math.abs(gs.dx),
+      onPanResponderMove: (_, gs) => {
+        if (!lockRef.current && gs.dy > 0) {
+          slideAnim.setValue(gs.dy);
+        }
+      },
+      onPanResponderRelease: (_, gs) => {
+        if (!lockRef.current && gs.dy > 80) {
+          Animated.parallel([
+            Animated.timing(slideAnim, {
+              toValue: 600,
+              duration: 220,
+              easing: Easing.in(Easing.cubic),
+              useNativeDriver: true,
+            }),
+            Animated.timing(backdropAnim, {
+              toValue: 0,
+              duration: 180,
+              useNativeDriver: true,
+            }),
+          ]).start(() => { onHideRef.current(); });
+        } else {
+          Animated.spring(slideAnim, {
+            toValue: 0,
+            tension: 120,
+            friction: 12,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
+  useEffect(() => {
+    slideAnim.setValue(500);
+    backdropAnim.setValue(0);
+
+    Animated.parallel([
+      Animated.timing(backdropAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 380,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    lockRef.current = true;
+    lockTimer.current = setTimeout(() => { lockRef.current = false; }, LOCK_MS);
+
+    return () => {
+      if (lockTimer.current) clearTimeout(lockTimer.current);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+    };
+  }, []);
 
   async function handleCopy() {
     await Clipboard.setStringAsync(PASSWORD);
     setCopied(true);
-    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
-    copyTimerRef.current = setTimeout(() => setCopied(false), 2500);
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+    copyTimer.current = setTimeout(() => setCopied(false), 2500);
   }
 
   return (
     <>
-      <Animated.View style={[styles.backdrop, { opacity: backdropAnim }]} pointerEvents="none" />
+      <Animated.View style={[styles.backdrop, { opacity: backdropAnim }]}>
+        <TouchableOpacity
+          style={StyleSheet.absoluteFillObject}
+          onPress={dismissSheet}
+          activeOpacity={1}
+        />
+      </Animated.View>
+
       <Animated.View
         style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}
+        {...panResponder.panHandlers}
       >
         <View style={styles.handle} />
 
@@ -117,17 +189,31 @@ export function RoastOverlay({ visible }: Props) {
         <Text style={styles.passwordLabel}>The password was always:</Text>
 
         <View style={styles.passwordRow}>
-          <Text style={styles.passwordText} selectable>{PASSWORD}</Text>
+          <Text style={styles.passwordText} selectable={showPwd}>
+            {showPwd ? PASSWORD : '•'.repeat(PASSWORD.length)}
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => setShowPwd((p) => !p)}
+            activeOpacity={0.7}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            style={styles.eyeBtn}
+          >
+            {showPwd
+              ? <EyeOff size={16} color={Colors.text.muted} strokeWidth={2} />
+              : <Eye    size={16} color={Colors.text.muted} strokeWidth={2} />
+            }
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={[styles.copyBtn, copied && styles.copyBtnDone]}
             onPress={handleCopy}
             activeOpacity={0.75}
           >
-            {copied ? (
-              <Check size={15} color={Colors.green.label} strokeWidth={2.5} />
-            ) : (
-              <Copy size={15} color={Colors.text.muted} strokeWidth={2} />
-            )}
+            {copied
+              ? <Check size={15} color={Colors.green.label} strokeWidth={2.5} />
+              : <Copy  size={15} color={Colors.text.muted}  strokeWidth={2} />
+            }
             <Text style={[styles.copyBtnText, copied && styles.copyBtnTextDone]}>
               {copied ? 'Copied!' : 'Copy'}
             </Text>
@@ -135,7 +221,7 @@ export function RoastOverlay({ visible }: Props) {
         </View>
 
         <Text style={styles.footer}>
-          This panel will not go away. You're welcome.
+          Swipe down or tap outside to hide. You'll need to come back if you forget again.
         </Text>
       </Animated.View>
     </>
@@ -219,7 +305,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: Spacing.md,
+    gap: Spacing.sm,
     backgroundColor: Colors.bg.surface,
     borderRadius: Radius.xl,
     borderWidth: 1,
@@ -236,6 +322,10 @@ const styles = StyleSheet.create({
     color: Colors.text.white,
     letterSpacing: 1.5,
     textAlign: 'center',
+  },
+
+  eyeBtn: {
+    padding: 4,
   },
 
   copyBtn: {

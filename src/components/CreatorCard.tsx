@@ -50,16 +50,8 @@ export function CreatorCard({ rnoteLoaded }: Props) {
       const toRemote = !showRemoteRef.current;
       showRemoteRef.current = toRemote;
       Animated.parallel([
-        Animated.timing(localOpacity, {
-          toValue: toRemote ? 0 : 1,
-          duration: 900,
-          useNativeDriver: true,
-        }),
-        Animated.timing(remoteOpacity, {
-          toValue: toRemote ? 1 : 0,
-          duration: 900,
-          useNativeDriver: true,
-        }),
+        Animated.timing(localOpacity,  { toValue: toRemote ? 0 : 1, duration: 900, useNativeDriver: true }),
+        Animated.timing(remoteOpacity, { toValue: toRemote ? 1 : 0, duration: 900, useNativeDriver: true }),
       ]).start();
     };
 
@@ -75,6 +67,18 @@ export function CreatorCard({ rnoteLoaded }: Props) {
     <View style={styles.wrap}>
       <View style={styles.divider} />
 
+      <TouchableOpacity
+        style={styles.websiteBtn}
+        onPress={() => openLink(APP_URL)}
+        activeOpacity={0.8}
+      >
+        <Globe size={16} color={Colors.red.primary} strokeWidth={2} />
+        <Text style={styles.websiteBtnText}>See all wishes on the web</Text>
+        <Text style={styles.websiteArrow}>›</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.madeByLabel}>Made by</Text>
+
       <View style={styles.card}>
         <View style={styles.avatarWrap}>
           <Animated.Image
@@ -89,7 +93,6 @@ export function CreatorCard({ rnoteLoaded }: Props) {
           )}
         </View>
 
-        <Text style={styles.madeBy}>Made by</Text>
         <Text style={styles.creatorName}>Rajnish Mehta</Text>
         <Text style={styles.username}>@RajnishKMehta</Text>
 
@@ -116,16 +119,6 @@ export function CreatorCard({ rnoteLoaded }: Props) {
             <Text style={styles.socialChipText}>Dev.to</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          style={styles.websiteBtn}
-          onPress={() => openLink(APP_URL)}
-          activeOpacity={0.8}
-        >
-          <Globe size={16} color={Colors.red.primary} strokeWidth={2} />
-          <Text style={styles.websiteBtnText}>See all wishes on the web</Text>
-          <Text style={styles.websiteArrow}>›</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -144,6 +137,42 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
 
+  websiteBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.bg.elevated,
+    borderRadius: Radius.xl,
+    borderWidth: 1,
+    borderColor: Colors.border.redFaint,
+    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.md,
+    marginBottom: Spacing.xxl,
+  },
+
+  websiteBtnText: {
+    flex: 1,
+    fontSize: FontSize.sm,
+    fontWeight: FontWeight.semibold,
+    color: Colors.text.white,
+  },
+
+  websiteArrow: {
+    fontSize: 20,
+    color: Colors.text.dimmer,
+    lineHeight: 22,
+  },
+
+  madeByLabel: {
+    fontSize: FontSize.xs,
+    fontWeight: FontWeight.bold,
+    color: Colors.text.dimmer,
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    marginBottom: Spacing.md,
+  },
+
   card: {
     alignItems: 'center',
     backgroundColor: Colors.bg.card,
@@ -153,7 +182,6 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.xxxl,
     paddingBottom: Spacing.xl,
     paddingHorizontal: Spacing.xl,
-    gap: 0,
   },
 
   avatarWrap: {
@@ -179,15 +207,6 @@ const styles = StyleSheet.create({
     left: 0,
   },
 
-  madeBy: {
-    fontSize: FontSize.xs,
-    fontWeight: FontWeight.bold,
-    color: Colors.text.dimmer,
-    letterSpacing: 1.2,
-    textTransform: 'uppercase',
-    marginBottom: 6,
-  },
-
   creatorName: {
     fontSize: 22,
     fontWeight: FontWeight.bold,
@@ -206,7 +225,6 @@ const styles = StyleSheet.create({
   socialRow: {
     flexDirection: 'row',
     gap: Spacing.sm,
-    marginBottom: Spacing.xl,
   },
 
   socialChip: {
@@ -223,32 +241,5 @@ const styles = StyleSheet.create({
     fontWeight: FontWeight.semibold,
     color: Colors.text.muted,
     letterSpacing: 0.3,
-  },
-
-  websiteBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    backgroundColor: Colors.bg.elevated,
-    borderRadius: Radius.xl,
-    borderWidth: 1,
-    borderColor: Colors.border.redFaint,
-    paddingHorizontal: Spacing.xl,
-    paddingVertical: Spacing.md,
-    alignSelf: 'stretch',
-    marginTop: 4,
-  },
-
-  websiteBtnText: {
-    flex: 1,
-    fontSize: FontSize.sm,
-    fontWeight: FontWeight.semibold,
-    color: Colors.text.white,
-  },
-
-  websiteArrow: {
-    fontSize: 20,
-    color: Colors.text.dimmer,
-    lineHeight: 22,
   },
 });

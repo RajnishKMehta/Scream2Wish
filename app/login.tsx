@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import {
+  Eye,
+  EyeOff,
   LogIn,
   User,
   Lock,
@@ -26,12 +28,6 @@ import { Colors, Spacing, Layout, Components, Typography } from '@stylez';
 import { VideoOverlay } from '@cmp/VideoOverlay';
 import { LoadingScreen } from '@cmp/LoginLoading';
 import { RoastOverlay } from '@cmp/RoastOverlay';
-
-const showPassToggleStyle = {
-  fontSize: 13,
-  color: Colors.text.subtle,
-  letterSpacing: 0.2,
-} as const;
 
 const NAME_MAX = 30;
 
@@ -56,46 +52,33 @@ function isValidName(name: string): boolean {
 }
 
 export default function LoginScreen() {
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPass, setShowPass] = useState(false);
+  const [name, setName]                   = useState('');
+  const [password, setPassword]           = useState('');
+  const [showPass, setShowPass]           = useState(false);
   const [nameErrorVisible, setNameErrorVisible] = useState(false);
   const [passErrorVisible, setPassErrorVisible] = useState(false);
   const [wrongAttempts, setWrongAttempts] = useState(0);
-  const [videoVisible, setVideoVisible] = useState(false);
-  const [roastVisible, setRoastVisible] = useState(false);
-  const [memeLoading, setMemeLoading] = useState(false);
+  const [videoVisible, setVideoVisible]   = useState(false);
+  const [roastShown, setRoastShown]       = useState(false);
+  const [roastVisible, setRoastVisible]   = useState(false);
+  const [memeLoading, setMemeLoading]     = useState(false);
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(28)).current;
+  const fadeAnim      = useRef(new Animated.Value(0)).current;
+  const slideAnim     = useRef(new Animated.Value(28)).current;
   const logoScaleAnim = useRef(new Animated.Value(0.75)).current;
   const errorShakeAnim = useRef(new Animated.Value(0)).current;
   const passwordInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 650,
-        useNativeDriver: true,
-      }),
-      Animated.spring(slideAnim, {
-        toValue: 0,
-        tension: 55,
-        friction: 10,
-        useNativeDriver: true,
-      }),
-      Animated.spring(logoScaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 8,
-        useNativeDriver: true,
-      }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 650, useNativeDriver: true }),
+      Animated.spring(slideAnim, { toValue: 0, tension: 55, friction: 10, useNativeDriver: true }),
+      Animated.spring(logoScaleAnim, { toValue: 1, tension: 50, friction: 8, useNativeDriver: true }),
     ]).start();
   }, []);
 
   const passValidation = validatePassword(password);
-  const nameValid = isValidName(name);
+  const nameValid      = isValidName(name);
 
   useEffect(() => {
     if (nameValid && passValidation.success && videoVisible) {
@@ -110,11 +93,11 @@ export default function LoginScreen() {
     Vibration.vibrate([0, 60, 40, 60]);
     errorShakeAnim.setValue(0);
     Animated.sequence([
-      Animated.timing(errorShakeAnim, { toValue: 10, duration: 55, useNativeDriver: true }),
+      Animated.timing(errorShakeAnim, { toValue: 10,  duration: 55, useNativeDriver: true }),
       Animated.timing(errorShakeAnim, { toValue: -10, duration: 55, useNativeDriver: true }),
-      Animated.timing(errorShakeAnim, { toValue: 7, duration: 55, useNativeDriver: true }),
-      Animated.timing(errorShakeAnim, { toValue: -7, duration: 55, useNativeDriver: true }),
-      Animated.timing(errorShakeAnim, { toValue: 0, duration: 55, useNativeDriver: true }),
+      Animated.timing(errorShakeAnim, { toValue: 7,   duration: 55, useNativeDriver: true }),
+      Animated.timing(errorShakeAnim, { toValue: -7,  duration: 55, useNativeDriver: true }),
+      Animated.timing(errorShakeAnim, { toValue: 0,   duration: 55, useNativeDriver: true }),
     ]).start();
   }
 
@@ -129,8 +112,11 @@ export default function LoginScreen() {
       shakeError();
 
       if (newAttempts >= 4) {
-        setRoastVisible(true);
-        stopPlaying();
+        if (!roastShown) {
+          setRoastShown(true);
+          setRoastVisible(true);
+          stopPlaying();
+        }
         speak(randomRoast(), { rate: 0.9 });
       } else {
         await playChiSasur();
@@ -157,10 +143,7 @@ export default function LoginScreen() {
           <Animated.View
             style={[
               Layout.centeredInner,
-              {
-                opacity: fadeAnim,
-                transform: [{ translateY: slideAnim }],
-              },
+              { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
             ]}
           >
             <Animated.View
@@ -175,10 +158,7 @@ export default function LoginScreen() {
             </Text>
 
             <Animated.View
-              style={[
-                Components.card,
-                { transform: [{ translateX: errorShakeAnim }] },
-              ]}
+              style={[Components.card, { transform: [{ translateX: errorShakeAnim }] }]}
             >
               <Text style={Typography.cardTitle}>Welcum💦</Text>
               <Text style={Typography.cardSub}>
@@ -187,12 +167,7 @@ export default function LoginScreen() {
 
               <View style={Components.inputGroup}>
                 <Text style={Typography.inputLabel}>Name (no joke enter real name)</Text>
-                <View
-                  style={[
-                    Components.inputWrap,
-                    showNameError && Components.inputWrapError,
-                  ]}
-                >
+                <View style={[Components.inputWrap, showNameError && Components.inputWrapError]}>
                   <User
                     size={18}
                     color={showNameError ? Colors.red.primary : Colors.text.subtle}
@@ -201,9 +176,7 @@ export default function LoginScreen() {
                   <TextInput
                     style={Typography.inputText}
                     value={name}
-                    onChangeText={(t) => {
-                      if (t.length <= NAME_MAX) setName(t);
-                    }}
+                    onChangeText={(t) => { if (t.length <= NAME_MAX) setName(t); }}
                     placeholder="e.g. Rajnish Mehta"
                     placeholderTextColor={Colors.text.dimmer}
                     selectionColor={Colors.red.primary}
@@ -213,9 +186,7 @@ export default function LoginScreen() {
                     blurOnSubmit={false}
                     onSubmitEditing={() => passwordInputRef.current?.focus()}
                   />
-                  <Text style={Typography.charCount}>
-                    {name.length}/{NAME_MAX}
-                  </Text>
+                  <Text style={Typography.charCount}>{name.length}/{NAME_MAX}</Text>
                 </View>
                 {showNameError && (
                   <View style={Components.errorRow}>
@@ -231,12 +202,7 @@ export default function LoginScreen() {
 
               <View style={Components.inputGroup}>
                 <Text style={Typography.inputLabelRaw}>Enter PassW0RD</Text>
-                <View
-                  style={[
-                    Components.inputWrap,
-                    showPassError && Components.inputWrapError,
-                  ]}
-                >
+                <View style={[Components.inputWrap, showPassError && Components.inputWrapError]}>
                   <Lock
                     size={18}
                     color={showPassError ? Colors.red.primary : Colors.text.subtle}
@@ -249,7 +215,7 @@ export default function LoginScreen() {
                     onChangeText={(t) => {
                       setPassword(t);
                       setPassErrorVisible(false);
-                      if (!roastVisible && wrongAttempts >= 1 && !videoVisible) {
+                      if (!roastShown && wrongAttempts >= 1 && !videoVisible) {
                         setVideoVisible(true);
                       }
                     }}
@@ -262,6 +228,16 @@ export default function LoginScreen() {
                     returnKeyType="done"
                     onSubmitEditing={handleLogin}
                   />
+                  <TouchableOpacity
+                    onPress={() => setShowPass((p) => !p)}
+                    activeOpacity={0.7}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                  >
+                    {showPass
+                      ? <EyeOff size={18} color={Colors.text.subtle} strokeWidth={2} />
+                      : <Eye    size={18} color={Colors.text.subtle} strokeWidth={2} />
+                    }
+                  </TouchableOpacity>
                 </View>
                 {showPassError && (
                   <View style={Components.errorRow}>
@@ -287,16 +263,18 @@ export default function LoginScreen() {
                 <Text style={Typography.btnHeroText}>Login</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => setShowPass((p) => !p)}
-                activeOpacity={0.6}
-                hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}
-                style={{ marginTop: Spacing.md, alignSelf: 'center' }}
-              >
-                <Text style={showPassToggleStyle}>
-                  {showPass ? 'Hide password' : 'Show password'}
-                </Text>
-              </TouchableOpacity>
+              {roastShown && !roastVisible && (
+                <TouchableOpacity
+                  onPress={() => setRoastVisible(true)}
+                  activeOpacity={0.6}
+                  hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}
+                  style={{ marginTop: Spacing.md, alignSelf: 'center' }}
+                >
+                  <Text style={{ fontSize: 13, color: Colors.text.subtle, letterSpacing: 0.2 }}>
+                    Show password
+                  </Text>
+                </TouchableOpacity>
+              )}
             </Animated.View>
 
             <Text style={Typography.bottomNote}>
@@ -306,7 +284,7 @@ export default function LoginScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {videoVisible && !roastVisible && (
+      {videoVisible && !roastShown && (
         <VideoOverlay
           source={require('@video/math_effect.mp4')}
           loop
@@ -314,7 +292,9 @@ export default function LoginScreen() {
         />
       )}
 
-      <RoastOverlay visible={roastVisible} />
+      {roastVisible && (
+        <RoastOverlay onHide={() => setRoastVisible(false)} />
+      )}
 
       {memeLoading && (
         <LoadingScreen
