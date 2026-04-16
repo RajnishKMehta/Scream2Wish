@@ -6,7 +6,7 @@ export function renderNavbar(activePage: 'home' | 'about'): string {
       <div class="container navbar-inner">
         <a href="#home" class="navbar-logo">
           <img src="images/icon.png"       alt="${CONFIG.app.name}" class="logo-icon" />
-          <img src="images/logo16x9_2.png"   alt="${CONFIG.app.name}" class="logo-wide" />
+          <img src="images/logo16x9.png"   alt="${CONFIG.app.name}" class="logo-wide" />
           <span class="logo-text">${CONFIG.app.name}</span>
         </a>
         <div class="navbar-links">
