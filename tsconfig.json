@@ -5,6 +5,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
+      "@app/*": ["app/*"],
 
       "@assets/*": ["assets/*"],
       "@img/*": ["assets/images/*"],
@@ -14,9 +15,7 @@
       "@lib/*": ["src/lib/*"],
       "@cmp/*": ["src/components/*"],
       "@stylez": ["src/stylez/index.ts"],
-      "@stylez/*": ["src/stylez/*"],
-
-      "@app/*": ["app/*"]
+      "@stylez/*": ["src/stylez/*"]
     }
   },
   "include": [
